@@ -1,6 +1,18 @@
 <?php
 class ModelTotalVoucher extends Model {
 	public function getTotal(&$total_data, &$total, &$taxes) {
+		// Fix for manual order editing in Admin
+		if (isset($this->session->data['manual']['voucher'])) {
+			$total_data[] = $this->session->data['manual']['voucher'];
+
+			$amount = abs($this->session->data['manual']['voucher']['value']);
+			$total -= $amount;
+
+			unset($this->session->data['manual']['voucher']);
+
+			return;
+		}
+
 		if (isset($this->session->data['voucher'])) {
 			$this->language->load('total/voucher');
 

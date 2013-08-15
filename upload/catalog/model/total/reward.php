@@ -1,6 +1,18 @@
 <?php
 class ModelTotalReward extends Model {
 	public function getTotal(&$total_data, &$total, &$taxes) {
+		// Fix for manual order editing in Admin
+		if (isset($this->session->data['manual']['reward'])) {
+			$total_data[] = $this->session->data['manual']['reward'];
+
+			$discount_total = abs($this->session->data['manual']['reward']['value']);
+			$total -= $discount_total;
+
+			unset($this->session->data['manual']['reward']);
+
+			return;
+		}
+
 		if (isset($this->session->data['reward'])) {
 			$this->language->load('total/reward');
 

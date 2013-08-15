@@ -1,6 +1,18 @@
 <?php
 class ModelTotalCredit extends Model {
 	public function getTotal(&$total_data, &$total, &$taxes) {
+		// Fix for manual order editing in Admin
+		if (isset($this->session->data['manual']['credit'])) {
+			$total_data[] = $this->session->data['manual']['credit'];
+
+			$credit = abs($this->session->data['manual']['credit']['value']);
+			$total -= $credit;
+
+			unset($this->session->data['manual']['credit']);
+
+			return;
+		}
+
 		if ($this->config->get('credit_status')) {
 			$this->language->load('total/credit');
 
